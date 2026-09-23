@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f5ef">
+    <meta name="description" content="A beginner-friendly math helper that shows each step. Built with Bend 2.">
+    <title>Math Steps — see how it works</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand" aria-label="Math Steps home">
+        <span class="brand-mark" aria-hidden="true">m<span>+</span></span>
+        <span>math steps</span>
+      </div>
+      <span class="header-note">A small math helper, powered by Bend 2</span>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <span class="eyebrow">FOR THE CURIOUS MIND</span>
+        <h1 id="page-title">Math makes more sense <em>step by step.</em></h1>
+        <p>Type a problem or tap the math keyboard. See an exact answer and the work that gets you there.</p>
+      </section>
+
+      <div class="workspace">
+        <section class="entry-card" aria-labelledby="entry-title">
+          <div class="card-heading">
+            <div>
+              <span class="section-kicker">01 / YOUR PROBLEM</span>
+              <h2 id="entry-title">What are you working on?</h2>
+            </div>
+            <span class="scope-pill">Arithmetic + linear algebra</span>
+          </div>
+
+          <form id="problem-form">
+            <label for="problem-input" class="field-label">Enter a calculation or an equation</label>
+            <textarea id="problem-input" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Try 2(x + 3) = 14" aria-describedby="input-help"></textarea>
+            <p id="input-help" class="input-help">Use <strong>x</strong> as the variable. Fractions such as <strong>1/2</strong> stay exact. Press Ctrl+Enter to solve.</p>
+
+            <div class="keyboard-heading">
+              <span>Math keyboard</span>
+              <span>Tap to insert at the cursor</span>
+            </div>
+            <div class="math-keyboard" aria-label="Math keyboard">
+              <button type="button" data-insert="7">7</button>
+              <button type="button" data-insert="8">8</button>
+              <button type="button" data-insert="9">9</button>
+              <button type="button" class="operator-key" data-insert="÷" aria-label="Divide">÷</button>
+              <button type="button" class="operator-key" data-template="fraction" aria-label="Insert fraction template">a/b</button>
+
+              <button type="button" data-insert="4">4</button>
+              <button type="button" data-insert="5">5</button>
+              <button type="button" data-insert="6">6</button>
+              <button type="button" class="operator-key" data-insert="×" aria-label="Multiply">×</button>
+              <button type="button" class="operator-key" data-template="parentheses" aria-label="Insert parentheses">( )</button>
+
+              <button type="button" data-insert="1">1</button>
+              <button type="button" data-insert="2">2</button>
+              <button type="button" data-insert="3">3</button>
+              <button type="button" class="operator-key" data-insert="−" aria-label="Subtract">−</button>
+              <button type="button" class="operator-key" data-insert="x">x</button>
+
+              <button type="button" data-insert="0">0</button>
+              <button type="button" class="utility-key" data-action="backspace" aria-label="Backspace">⌫</button>
+              <button type="button" class="operator-key" data-insert="=" aria-label="Equals">=</button>
+              <button type="button" class="operator-key" data-insert="+" aria-label="Add">+</button>
+              <button type="button" class="utility-key" data-action="clear">Clear</button>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="solve-button">Show the steps <span aria-hidden="true">→</span></button>
+              <span>Clear explanations, one line at a time.</span>
+            </div>
+          </form>
+
+          <div class="examples" aria-label="Example problems">
+            <span>Try an example</span>
+            <div class="example-list">
+              <button type="button" data-example="2(x + 3) = 14">2(x + 3) = 14</button>
+              <button type="button" data-example="1/2 + 3/4">1/2 + 3/4</button>
+              <button type="button" data-example="3x + 2 = x + 10">3x + 2 = x + 10</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="result-card" aria-labelledby="result-title">
+          <div class="card-heading">
+            <div>
+              <span class="section-kicker">02 / THE WORK</span>
+              <h2 id="result-title">See how it comes together</h2>
+            </div>
+          </div>
+          <div id="result-region" class="result-region" aria-live="polite">
+            <div class="empty-state">
+              <div class="empty-illustration" aria-hidden="true"><span>1</span><span>2</span><span>✓</span></div>
+              <h3>Your steps will appear here</h3>
+              <p>Pick an example or enter your own problem. We'll show the result and each move along the way.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <p class="scope-note">This first version works with exact fractions and linear expressions in x. Use parentheses for grouped denominators. Quadratics, roots, and decimals are coming later.</p>
+    </main>
+  </body>
+</html>
