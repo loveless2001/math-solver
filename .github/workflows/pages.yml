@@ -1,0 +1,58 @@
+name: Publish GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Bend 2.0.16
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/bend.tar.gz" \
+            https://github.com/bendlang/bend/releases/download/v2.0.16/bend-2.0.16-linux-x64.tar.gz
+          echo "496ff13a312221c3dc0dde4077368ced42c0f3eadcb61c2d43de5caddf0e50b4  $RUNNER_TEMP/bend.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/bend.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/bend/bin" >> "$GITHUB_PATH"
+
+      - name: Check and build site
+        env:
+          BEND_NO_TELEMETRY: "1"
+        run: |
+          bash verify.sh
+          bend index.html -o dist
+          test -f dist/index.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy site
+        id: deployment
+        uses: actions/deploy-pages@v4

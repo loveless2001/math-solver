@@ -13,6 +13,8 @@ python3 -m http.server 8000 --directory dist
 
 Open <http://localhost:8000>. The built site is static and works without a backend or an internet connection.
 
+The public site is at <https://loveless2001.github.io/math-solver/>. Pushes to `main` run the checks, build with Bend 2.0.16, and publish the static output through GitHub Actions.
+
 ## Enter a matrix problem
 
 The **Matrix builder** tab is the default. Choose an operation, set the size of matrix A (and the number of columns in B for matrix multiplication), then fill each labeled cell. The builder adds matching matrix B or vector b cells when needed. Enter whole numbers, decimals, or fractions such as `-3`, `0.5`, and `1/2`; **Fill empty cells with 0** helps with sparse matrices. Click **Show the steps** to solve.
