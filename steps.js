@@ -1,3 +1,6 @@
+import { solveMatrixProblem } from "./matrix.js";
+import { lowerExactMatrixMath, needsExtendedSolver, solveExtendedProblem } from "./extended-math.js";
+
 const ZERO = { $: "Q", negative: false, numerator: 0n, denominator: 1n };
 
 export class MathProblemError extends Error {
@@ -41,7 +44,7 @@ export function formatLinear(line) {
 }
 
 function normalInput(input) {
-  return input.trim().replaceAll("*", "×").replaceAll("/", "÷").replaceAll("-", "−");
+  return input.trim().replaceAll("*", "×").replaceAll("-", "−");
 }
 
 function hasVariable(expression) {
@@ -54,7 +57,7 @@ function problemMessage(problem) {
   if (problem.$ === "DivisionByZero") {
     return "Division by zero is undefined. Check the denominator.";
   }
-  return "This version handles arithmetic and linear expressions in x. Try a problem without x² or x × x.";
+  return "This version handles polynomial expressions up to degree 2 in x. Division by an expression containing x is not supported.";
 }
 
 function lineFor(expression, engine) {
@@ -179,6 +182,11 @@ function makeEquationResult(problem, input, engine) {
 }
 
 export function solveProblem(problem, input, engine) {
+  if (problem.kind === "matrix") {
+    return solveMatrixProblem({ ...problem, expression: lowerExactMatrixMath(problem.expression) }, input, engine);
+  }
+  if (problem.kind === "equation" ? needsExtendedSolver(problem.left) || needsExtendedSolver(problem.right)
+    : needsExtendedSolver(problem.expression)) return solveExtendedProblem(problem, input);
   return problem.kind === "equation"
     ? makeEquationResult(problem, input, engine)
     : makeExpressionResult(problem, input, engine);

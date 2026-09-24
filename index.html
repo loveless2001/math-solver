@@ -22,7 +22,7 @@
       <section class="intro" aria-labelledby="page-title">
         <span class="eyebrow">FOR THE CURIOUS MIND</span>
         <h1 id="page-title">Math makes more sense <em>step by step.</em></h1>
-        <p>Type a problem or tap the math keyboard. See an exact answer and the work that gets you there.</p>
+        <p>Build a matrix problem cell by cell, or type an expression. See the result and the work that gets you there.</p>
       </section>
 
       <div class="workspace">
@@ -32,13 +32,79 @@
               <span class="section-kicker">01 / YOUR PROBLEM</span>
               <h2 id="entry-title">What are you working on?</h2>
             </div>
-            <span class="scope-pill">Arithmetic + linear algebra</span>
+            <span class="scope-pill">Arithmetic + matrices</span>
           </div>
 
+          <div class="entry-modes" role="tablist" aria-label="Choose how to enter a problem">
+            <button id="guided-tab" type="button" role="tab" aria-controls="guided-panel" aria-selected="true">Matrix builder</button>
+            <button id="typed-tab" type="button" role="tab" aria-controls="typed-panel" aria-selected="false">Type a problem</button>
+            <button id="symbols-tab" type="button" role="tab" aria-controls="symbols-panel" aria-selected="false">Symbols & syntax</button>
+          </div>
+
+          <div id="guided-panel" role="tabpanel" aria-labelledby="guided-tab">
+            <form id="matrix-form">
+              <label for="matrix-operation" class="field-label">Choose an operation</label>
+              <select id="matrix-operation" class="builder-select">
+                <option value="det">Find a determinant</option>
+                <option value="inverse">Find an inverse</option>
+                <option value="rref">Reduce rows (RREF)</option>
+                <option value="transpose">Transpose a matrix</option>
+                <option value="add">Add two matrices</option>
+                <option value="subtract">Subtract two matrices</option>
+                <option value="multiply">Multiply two matrices</option>
+                <option value="scale">Multiply by a number</option>
+                <option value="matrixVector">Multiply by a vector</option>
+                <option value="solve">Solve A·x = b</option>
+              </select>
+
+              <div class="builder-size-section">
+                <span class="field-label">Choose the size</span>
+                <div class="builder-sizes">
+                  <label for="matrix-rows">Rows in A
+                    <select id="matrix-rows" class="builder-select">
+                      <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                  </label>
+                  <label id="matrix-cols-field" for="matrix-cols">Columns in A
+                    <select id="matrix-cols" class="builder-select">
+                      <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                  </label>
+                  <label id="matrix-b-cols-field" for="matrix-b-cols" hidden>Columns in B
+                    <select id="matrix-b-cols" class="builder-select">
+                      <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                  </label>
+                </div>
+                <p id="matrix-shape-note" class="builder-shape-note"></p>
+              </div>
+
+              <div class="builder-values-heading">
+                <span class="field-label">Enter the values</span>
+                <button id="fill-zeros" type="button">Fill empty cells with 0</button>
+              </div>
+              <div id="matrix-entry-fields"></div>
+              <p class="input-help builder-help">Use whole numbers, decimals, or fractions such as <strong>−3</strong>, <strong>0.5</strong>, or <strong>1/2</strong>. Fill every visible cell.</p>
+              <div class="form-actions">
+                <button type="submit" class="solve-button">Show the steps <span aria-hidden="true">→</span></button>
+              </div>
+            </form>
+          </div>
+
+          <div id="typed-panel" role="tabpanel" aria-labelledby="typed-tab" hidden>
           <form id="problem-form">
-            <label for="problem-input" class="field-label">Enter a calculation or an equation</label>
-            <textarea id="problem-input" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Try 2(x + 3) = 14" aria-describedby="input-help"></textarea>
-            <p id="input-help" class="input-help">Use <strong>x</strong> as the variable. Fractions such as <strong>1/2</strong> stay exact. Press Ctrl+Enter to solve.</p>
+            <label for="problem-input" class="field-label">Enter a calculation, equation, or matrix problem</label>
+            <textarea id="problem-input" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="input-suggestions" placeholder="Try 2(x + 3) = 14 or \frac{1}{2} + \frac{3}{4}" aria-describedby="input-help"></textarea>
+            <div id="input-suggestions" class="input-suggestions" role="listbox" aria-label="Input suggestions" hidden></div>
+            <p id="input-help" class="input-help">Type ordinary math or LaTeX such as <strong>\frac{1}{2}</strong>, <strong>\sqrt{9}</strong>, and <strong>x^2</strong>. Decimals are exact inputs; irrational roots show rounded results. You can omit × in <strong>2x</strong> or <strong>2(x+3)</strong>. Press Ctrl+Enter to solve.</p>
+            <div class="preview-card" aria-label="Live math preview">
+              <div class="preview-heading">Live preview <span>updates while you type</span></div>
+              <span class="preview-label">LaTeX source</span>
+              <code id="input-latex" class="latex-source">Start typing to see LaTeX</code>
+              <span class="preview-label">Rendered math</span>
+              <div id="input-rendered" class="rendered-math"><span class="preview-placeholder">Your expression will appear here</span></div>
+              <p id="preview-status" class="preview-status" aria-live="polite"></p>
+            </div>
 
             <div class="keyboard-heading">
               <span>Math keyboard</span>
@@ -68,6 +134,16 @@
               <button type="button" class="operator-key" data-insert="=" aria-label="Equals">=</button>
               <button type="button" class="operator-key" data-insert="+" aria-label="Add">+</button>
               <button type="button" class="utility-key" data-action="clear">Clear</button>
+              <button type="button" class="operator-key" data-insert="[">[</button>
+              <button type="button" class="operator-key" data-insert="]">]</button>
+              <button type="button" class="operator-key" data-insert=",">,</button>
+              <button type="button" class="operator-key" data-insert="det(">det(</button>
+              <button type="button" class="operator-key" data-insert="solve(">solve(</button>
+              <button type="button" class="operator-key" data-insert=".">.</button>
+              <button type="button" class="operator-key" data-insert="^">^</button>
+              <button type="button" class="operator-key" data-template="sqrt" aria-label="Insert square root template">√</button>
+              <button type="button" class="operator-key" data-template="root" aria-label="Insert nth root template">ⁿ√</button>
+              <button type="button" class="operator-key" data-insert=")">)</button>
             </div>
 
             <div class="form-actions">
@@ -82,7 +158,41 @@
               <button type="button" data-example="2(x + 3) = 14">2(x + 3) = 14</button>
               <button type="button" data-example="1/2 + 3/4">1/2 + 3/4</button>
               <button type="button" data-example="3x + 2 = x + 10">3x + 2 = x + 10</button>
+              <button type="button" data-example="det([[1,2],[3,4]])">det([[1,2],[3,4]])</button>
+              <button type="button" data-example="solve([[2,1],[1,-1]],[5,1])">solve([[2,1],[1,-1]],[5,1])</button>
+              <button type="button" data-example="x^2 - 5x + 6 = 0">x² − 5x + 6 = 0</button>
+              <button type="button" data-example="\sqrt{2} + 0.5">√2 + 0.5</button>
             </div>
+          </div>
+          </div>
+          <div id="symbols-panel" role="tabpanel" aria-labelledby="symbols-tab" hidden>
+            <p class="symbols-intro">Tap a symbol to add it to the typed problem. These are the operations this solver understands.</p>
+            <h3 class="symbol-group-title">Arithmetic & equations</h3>
+            <div class="symbol-grid">
+              <button type="button" data-insert="+"><strong>+</strong><span>Add</span></button>
+              <button type="button" data-insert="−"><strong>−</strong><span>Subtract</span></button>
+              <button type="button" data-insert="×"><strong>×</strong><span>Multiply · or \times</span></button>
+              <button type="button" data-insert="÷"><strong>÷</strong><span>Divide or \div</span></button>
+              <button type="button" data-insert="="><strong>=</strong><span>Equation</span></button>
+              <button type="button" data-insert="x"><strong>x</strong><span>Unknown</span></button>
+              <button type="button" data-template="fraction"><strong>a/b</strong><span>Exact fraction · \frac{a}{b}</span></button>
+              <button type="button" data-template="parentheses"><strong>( )</strong><span>Group terms</span></button>
+              <button type="button" data-insert="."><strong>.</strong><span>Decimal point</span></button>
+              <button type="button" data-insert="^"><strong>xⁿ</strong><span>Power · x^2</span></button>
+              <button type="button" data-template="sqrt"><strong>√x</strong><span>Square root · \sqrt{x}</span></button>
+              <button type="button" data-template="root"><strong>ⁿ√x</strong><span>Nth root · root(n,x)</span></button>
+            </div>
+            <h3 class="symbol-group-title">Matrices</h3>
+            <div class="symbol-grid">
+              <button type="button" data-insert="[[1,2],[3,4]]"><strong>[ […] ]</strong><span>2 × 2 matrix</span></button>
+              <button type="button" data-insert="[1,2]"><strong>[…]</strong><span>Vector</span></button>
+              <button type="button" data-template="det"><strong>det( )</strong><span>Determinant</span></button>
+              <button type="button" data-template="inv"><strong>inv( )</strong><span>Inverse</span></button>
+              <button type="button" data-template="rref"><strong>rref( )</strong><span>Row reduction</span></button>
+              <button type="button" data-template="transpose"><strong>transpose( )</strong><span>Transpose</span></button>
+              <button type="button" data-template="solve"><strong>solve(A,b)</strong><span>Linear system</span></button>
+            </div>
+            <p class="symbol-note">LaTeX matrices also work: <code>\begin{bmatrix}1 &amp; 2 \\ 3 &amp; 4\end{bmatrix}</code>. Powers of x work through quadratics. Roots containing x and complex results are outside the current solver.</p>
           </div>
         </section>
 
@@ -97,13 +207,13 @@
             <div class="empty-state">
               <div class="empty-illustration" aria-hidden="true"><span>1</span><span>2</span><span>✓</span></div>
               <h3>Your steps will appear here</h3>
-              <p>Pick an example or enter your own problem. We'll show the result and each move along the way.</p>
+              <p>Choose an operation and fill the cells, or type a problem. We'll show the result and each move along the way.</p>
             </div>
           </div>
         </section>
       </div>
 
-      <p class="scope-note">This first version works with exact fractions and linear expressions in x. Use parentheses for grouped denominators. Quadratics, roots, and decimals are coming later.</p>
+      <p class="scope-note">Works with exact decimals and fractions, numeric powers and roots, linear and quadratic equations in x, and matrices up to 4×4. Irrational results are rounded to six decimal places. Roots containing x, higher-degree equations, complex results, and matrix powers are outside the current solver.</p>
     </main>
   </body>
 </html>
